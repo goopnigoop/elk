@@ -10,4 +10,3 @@ stop:
 	docker system prune --volumes --force
 
 restart: stop clean start
-

@@ -35,3 +35,8 @@ build/
 /demo/.mvn/wrapper/MavenWrapperDownloader.java
 /demo/mvnw
 /demo/mvnw.cmd
+/metadata/mvnw.cmd
+/metadata/mvnw
+/metadata/.mvn/wrapper/maven-wrapper.jar
+/metadata/.mvn/wrapper/maven-wrapper.properties
+/metadata/.mvn/wrapper/MavenWrapperDownloader.java
