@@ -1,7 +1,9 @@
 package com.goop.elk.demo;
 
+import com.google.common.collect.ImmutableList;
 import com.goop.elk.demo.model.FileEntity;
 import com.goop.elk.demo.repository.FileEntityRepository;
+import com.sun.tools.javac.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @SpringBootApplication
@@ -23,14 +26,27 @@ public class DemoApplication {
 
     @Bean
     CommandLineRunner commandLineRunner(){
-        return args -> fileEntityRepository.save(new FileEntity(
+        return args -> saveToTheDatabase();
+    }
+
+    private void saveToTheDatabase() {
+        final FileEntity firstFile = new FileEntity(
                 null,
                 "first",
                 "owner",
                 "january",
                 "txt",
                 BigInteger.valueOf(12321312),
-                new HashMap<>()));
+                new HashMap<>());
+        final FileEntity secondFile = new FileEntity(
+                null,
+                "second",
+                "ownerN",
+                "february",
+                "jpg",
+                BigInteger.valueOf(12321312),
+                new HashMap<>());
+        fileEntityRepository.saveAll(ImmutableList.of(firstFile, secondFile));
     }
 
 }
