@@ -28,7 +28,7 @@ public class FileController {
     private final FileEntityMapper fileEntityMapper;
 
     @GetMapping
-    public List<FileEntityDto> getFiles(){
+    public List<FileEntityDto> getFiles() {
         return fileEntityService.findAll()
                 .stream()
                 .map(fileEntityMapper::modelToDto)
@@ -36,7 +36,7 @@ public class FileController {
     }
 
     @GetMapping("/{owner}")
-    public List<FileEntityDto> getFileByName(@PathVariable("owner") String owner){
+    public List<FileEntityDto> getFileByName(@PathVariable("owner") String owner) {
         return fileEntityService.findAllByOwner(owner)
                 .stream()
                 .map(fileEntityMapper::modelToDto)
@@ -44,16 +44,16 @@ public class FileController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveOrUpdateFile(@RequestBody FileEntityDto fileEntity){
+    public ResponseEntity<?> saveOrUpdateFile(@RequestBody FileEntityDto fileEntity) {
         final FileEntity savedFileEntity = fileEntityService.saveOrUpdateFileEntity(fileEntityMapper.dtoToModel(fileEntity));
-        logger.info("File with id"+ savedFileEntity.getId() +" was created :: Creation Time - {}", dateTimeFormatter.format(LocalDateTime.now()) );
+        logger.info("File with id {} was created :: Creation Time - {}", savedFileEntity.getId(), dateTimeFormatter.format(LocalDateTime.now()));
         return new ResponseEntity<>(savedFileEntity, HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteById(String id){
+    public ResponseEntity<?> deleteById(String id) {
         fileEntityService.deleteFile(id);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
