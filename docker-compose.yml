@@ -7,74 +7,6 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
-  elasticsearch:
-    hostname: elasticsearch
-    container_name: elasticsearch
-    image: goopnigoop/elasticsearch:latest
-    build:
-      context: ./elk/elasticsearch
-      dockerfile: Dockerfile
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
-    ports:
-      - 9200:9200
-      - 9300:9300
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-
-  filebeat:
-    hostname: filebeat
-    container_name: filebeat
-    image: goopnigoop/filebeat:latest
-    build:
-      context: ./elk/filebeat
-      dockerfile: Dockerfile
-    volumes:
-      # needed to access all docker logs (read only) :
-      - "/var/lib/docker/containers:/usr/share/dockerlogs/data:ro"
-      # needed to access additional informations about containers
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - ./wait-for-it.sh:/usr/share/filebeat/wait-for-it.sh
-    command: bash -c "wait-for-it.sh --timeout=60 elasticsearch:9200 && filebeat"
-    depends_on:
-      - elasticsearch
-
-  kibana:
-    container_name: kibana
-    image: goopnigoop/kibana:latest
-    build:
-      context: ./elk/kibana
-      dockerfile: Dockerfile
-    volumes:
-      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
-    ports:
-      - 5601:5601
-    command: bash -c "wait-for-it.sh --timeout=60 elasticsearch:9200 && kibana"
-    depends_on:
-      - elasticsearch
-
-  logstash:
-    hostname: logstash
-    image: goopnigoop/logstash:latest
-    container_name: logstash
-    build:
-      context: ./elk/logstash
-      dockerfile: Dockerfile
-    ports:
-      - 5044:5044
-    environment:
-      LOG_LEVEL: error
-    volumes:
-      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
-      - ./elk/logstash/pipeline/:/usr/share/logstash/pipeline/
-    command: bash -c "wait-for-it.sh --timeout=60 elasticsearch:9200 && logstash -f /usr/share/logstash/pipeline/logstash.conf"
-    depends_on:
-      - elasticsearch
 
   metadata:
     image: goopnigoop/metadata:latest
@@ -87,8 +19,29 @@ services:
       - '5009:5005'
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
+      EUREKA_CLIENT_FETCH_REGISTRY: 'true'
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
     depends_on:
       - mongo
+
+  file:
+    image: goopnigoop/file:latest
+    container_name: file
+    build:
+      context: ./file
+      dockerfile: Dockerfile
+    ports:
+      - '8082:8080'
+      - '5010:5005'
+    environment:
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
+      EUREKA_CLIENT_FETCH_REGISTRY: 'true'
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+    depends_on:
+      - metadata
 
   prometheus:
     image: prom/prometheus
@@ -100,7 +53,6 @@ services:
     depends_on:
       - metadata
 
-
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -110,6 +62,34 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - prometheus
+
+  eureka:
+    image: goopnigoop/eureka:latest
+    container_name: eureka
+    build:
+      context: ./eureka
+      dockerfile: Dockerfile
+    environment:
+      EUREKA_CLIENT_FETCH_REGISTRY: 'false'
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'false'
+    ports:
+      - "8761:8761"
+
+  zuul:
+    image: goopnigoop/zuul:latest
+    container_name: zuul
+    build:
+      context: ./zuul
+      dockerfile: Dockerfile
+    ports:
+      - "8766:8766"
+    depends_on:
+      - eureka
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
+      UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
+      EUREKA_CLIENT_FETCH_REGISTRY: 'true'
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
 
 networks:
   default:

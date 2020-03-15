@@ -15,5 +15,6 @@
 as an application simple CRUD application to save files metadata
  
 
- 
+ dashboard used for grafana:
+ `https://grafana.com/grafana/dashboards/4701`
  

@@ -1,6 +1,6 @@
 package com.goop.elk.demo.converter;
 
-import com.goop.elk.demo.dto.FileEntityDto;
+import com.goop.common.dto.FileEntityDto;
 import com.goop.elk.demo.model.FileEntity;
 import org.mapstruct.Mapper;
 
