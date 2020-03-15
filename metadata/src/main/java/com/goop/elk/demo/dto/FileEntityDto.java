@@ -1,4 +1,4 @@
-package com.goop.common.dto;
+package com.goop.elk.demo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

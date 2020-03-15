@@ -1,6 +1,6 @@
 package com.goop.file.service.impl;
 
-import com.goop.common.dto.FileEntityDto;
+import com.goop.file.dto.FileEntityDto;
 import com.goop.file.service.FileMetadataService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

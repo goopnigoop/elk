@@ -2,7 +2,6 @@ start-elk:
 	docker-compose -f docker-compose-elk.yml up -d --build
 
 start:
-	cd commonresources && mvn clean install
 	mvn clean install
 	docker-compose -f docker-compose.yml up -d --build
 

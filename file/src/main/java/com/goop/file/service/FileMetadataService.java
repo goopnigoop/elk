@@ -1,7 +1,6 @@
 package com.goop.file.service;
 
-
-import com.goop.common.dto.FileEntityDto;
+import com.goop.file.dto.FileEntityDto;
 
 public interface FileMetadataService {
 

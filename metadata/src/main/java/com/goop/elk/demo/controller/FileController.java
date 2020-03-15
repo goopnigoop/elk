@@ -1,7 +1,7 @@
 package com.goop.elk.demo.controller;
 
-import com.goop.common.dto.FileEntityDto;
 import com.goop.elk.demo.converter.FileEntityMapper;
+import com.goop.elk.demo.dto.FileEntityDto;
 import com.goop.elk.demo.model.FileEntity;
 import com.goop.elk.demo.service.FileEntityService;
 import lombok.RequiredArgsConstructor;
