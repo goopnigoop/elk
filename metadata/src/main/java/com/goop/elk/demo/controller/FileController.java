@@ -37,10 +37,11 @@ public class FileController {
     }
 
     @GetMapping("/{filename}")
-    public FileEntityDto getFileByName(@PathVariable("filename") String filename) {
-        return Optional.ofNullable(fileEntityService.findByFileName(filename))
+    public List<FileEntityDto> getFileByName(@PathVariable("filename") String filename) {
+        return fileEntityService.findByFileName(filename)
+                .stream()
                 .map(fileEntityMapper::modelToDto)
-                .orElseThrow(()->new RuntimeException("No File with this name"));
+                .collect(Collectors.toList());
     }
 
     @PostMapping

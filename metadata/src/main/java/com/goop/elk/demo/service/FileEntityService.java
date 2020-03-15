@@ -7,7 +7,7 @@ import java.util.List;
 public interface FileEntityService {
 
     List<FileEntity> findAll();
-    FileEntity findByFileName(String fileName);
+    List<FileEntity> findByFileName(String fileName);
     List<FileEntity> findAllByOwner(String owner);
     void deleteFile(String id);
     FileEntity saveOrUpdateFileEntity(FileEntity fileEntity);

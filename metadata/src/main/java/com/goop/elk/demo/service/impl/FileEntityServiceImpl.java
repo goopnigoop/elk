@@ -20,8 +20,8 @@ public class FileEntityServiceImpl implements FileEntityService {
     }
 
     @Override
-    public FileEntity findByFileName(String fileName) {
-        return fileEntityRepository.findByFileName(fileName).orElseThrow(() -> new RuntimeException("File is not found"));
+    public List<FileEntity> findByFileName(String fileName) {
+        return fileEntityRepository.findByFileName(fileName);
     }
 
     @Override

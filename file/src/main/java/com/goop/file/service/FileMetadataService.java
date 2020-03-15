@@ -2,8 +2,10 @@ package com.goop.file.service;
 
 import com.goop.file.dto.FileEntityDto;
 
+import java.util.List;
+
 public interface FileMetadataService {
 
-    FileEntityDto getFileMetadataByFilename(String filename);
+    List<FileEntityDto> getFileMetadataByFilename(String filename);
 
 }
