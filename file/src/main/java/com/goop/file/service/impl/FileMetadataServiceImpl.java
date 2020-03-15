@@ -1,21 +1,23 @@
 package com.goop.file.service.impl;
 
+import com.goop.file.clents.MetadataClient;
 import com.goop.file.dto.FileEntityDto;
 import com.goop.file.service.FileMetadataService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Service
 public class FileMetadataServiceImpl implements FileMetadataService {
 
-    private final RestTemplate restTemplate;
+    private final MetadataClient metadataClient;
 
-    public FileMetadataServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public FileMetadataServiceImpl(MetadataClient metadataClient) {
+        this.metadataClient = metadataClient;
     }
 
     @Override
-    public FileEntityDto getFileMetadataByFilename(String filename) {
-        return restTemplate.getForObject("http://metadata/api/files/" + filename, FileEntityDto.class);
+    public List<FileEntityDto> getFileMetadataByFilename(String filename) {
+        return metadataClient.getFileMetadata(filename);
     }
 }

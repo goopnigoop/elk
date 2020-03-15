@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface FileEntityRepository extends MongoRepository<FileEntity, String> {
 
-    Optional<FileEntity> findByFileName(String fileName);
+    List<FileEntity> findByFileName(String fileName);
     List<FileEntity> findAllByOwner(String owner);
 }
