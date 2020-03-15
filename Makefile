@@ -1,13 +1,16 @@
+start-elk:
+	docker-compose -f docker-compose-elk.yml up -d --build
+
 start:
 	mvn clean install
-	docker-compose up -d --build
+	docker-compose -f docker-compose.yml up -d --build
 
 clean:
 	mvn clean
+	docker system prune --volumes --force
 
 stop:
 	docker-compose down
-	docker system prune --volumes --force
 
 build:
 	mvn clean package

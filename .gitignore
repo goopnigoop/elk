@@ -40,3 +40,8 @@ build/
 /metadata/.mvn/wrapper/maven-wrapper.jar
 /metadata/.mvn/wrapper/maven-wrapper.properties
 /metadata/.mvn/wrapper/MavenWrapperDownloader.java
+/file/.mvn/wrapper/maven-wrapper.jar
+/file/.mvn/wrapper/maven-wrapper.properties
+/file/.mvn/wrapper/MavenWrapperDownloader.java
+/file/mvnw
+/file/mvnw.cmd

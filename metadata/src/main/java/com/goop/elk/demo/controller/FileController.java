@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,12 +36,11 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{owner}")
-    public List<FileEntityDto> getFileByName(@PathVariable("owner") String owner) {
-        return fileEntityService.findAllByOwner(owner)
-                .stream()
+    @GetMapping("/{filename}")
+    public FileEntityDto getFileByName(@PathVariable("filename") String filename) {
+        return Optional.ofNullable(fileEntityService.findByFileName(filename))
                 .map(fileEntityMapper::modelToDto)
-                .collect(Collectors.toList());
+                .orElseThrow(()->new RuntimeException("No File with this name"));
     }
 
     @PostMapping
