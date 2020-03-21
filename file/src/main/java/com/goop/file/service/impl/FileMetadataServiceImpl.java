@@ -2,6 +2,7 @@ package com.goop.file.service.impl;
 
 import com.goop.file.clents.MetadataClient;
 import com.goop.file.dto.FileEntityDto;
+import com.goop.file.dto.ResponseWrapper;
 import com.goop.file.service.FileMetadataService;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class FileMetadataServiceImpl implements FileMetadataService {
     }
 
     @Override
-    public List<FileEntityDto> getFileMetadataByFilename(String filename) {
+    public ResponseWrapper<List<FileEntityDto>> getFileMetadataByFilename(String filename) {
         return metadataClient.getFileMetadata(filename);
     }
 }

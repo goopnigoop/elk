@@ -2,11 +2,13 @@ package com.goop.elk.demo.controller;
 
 import com.goop.elk.demo.converter.FileEntityMapper;
 import com.goop.elk.demo.dto.FileEntityDto;
+import com.goop.elk.demo.dto.ResponseWrapper;
 import com.goop.elk.demo.model.FileEntity;
 import com.goop.elk.demo.service.FileEntityService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,7 @@ public class FileController {
 
     private final FileEntityService fileEntityService;
     private final FileEntityMapper fileEntityMapper;
+    private final Environment environment;
 
     @GetMapping
     public List<FileEntityDto> getFiles() {
@@ -37,11 +40,12 @@ public class FileController {
     }
 
     @GetMapping("/{filename}")
-    public List<FileEntityDto> getFileByName(@PathVariable("filename") String filename) {
-        return fileEntityService.findByFileName(filename)
+    public ResponseWrapper<List<FileEntityDto>> getFileByName(@PathVariable("filename") String filename) {
+        final List<FileEntityDto> listOfEntries = fileEntityService.findByFileName(filename)
                 .stream()
                 .map(fileEntityMapper::modelToDto)
                 .collect(Collectors.toList());
+        return new ResponseWrapper<>(environment,listOfEntries);
     }
 
     @PostMapping
