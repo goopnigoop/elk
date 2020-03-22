@@ -16,3 +16,16 @@ as an application simple CRUD application to save files metadata
 
  dashboard used for grafana:
  `https://grafana.com/grafana/dashboards/4701`
+
+3. Added auth entrypoint and user admin:admin
+
+to get jwt token:
+
+ `localhost:8755/auth`
+ 
+ post: 
+ `{
+  	"username":"admin",
+  	"password":"admin"
+  }
+  `

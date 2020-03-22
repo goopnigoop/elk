@@ -15,7 +15,7 @@ services:
       context: ./metadata
       dockerfile: Dockerfile
     ports:
-      - '8081:8080'
+      - '8084-8089:8080'
       - '5009:5005'
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
@@ -83,6 +83,24 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8766:8766"
+      - '5008:5005'
+    depends_on:
+      - eureka
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
+      UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
+      EUREKA_CLIENT_FETCH_REGISTRY: 'true'
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+
+  auth:
+    image: goopnigoop/auth:latest
+    container_name: auth
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    ports:
+      - "9500:9500"
+      - '5007:5005'
     depends_on:
       - eureka
     environment:
