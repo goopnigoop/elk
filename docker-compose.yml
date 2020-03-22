@@ -1,13 +1,21 @@
 version: '3.7'
 
 services:
+  pstg:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: elk
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
   mongo:
     container_name: mongo
     hostname: mongo
     image: mongo:latest
     ports:
       - "27017:27017"
-
   metadata:
     image: goopnigoop/metadata:latest
     build:
@@ -24,6 +32,7 @@ services:
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
     depends_on:
       - mongo
+      - pstg
 
   file:
     image: goopnigoop/file:latest
@@ -41,6 +50,7 @@ services:
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
     depends_on:
       - metadata
+      - pstg
 
   prometheus:
     image: prom/prometheus
@@ -85,6 +95,7 @@ services:
       - '5008:5005'
     depends_on:
       - eureka
+      - pstg
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
       UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
@@ -102,7 +113,12 @@ services:
       - '5007:5005'
     depends_on:
       - eureka
+      - pstg
     environment:
+      DB_URL: pstg
+      POSTGRES_DB: elk
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
       UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
