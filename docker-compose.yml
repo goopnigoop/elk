@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 
 services:
   mongo:
@@ -10,13 +10,12 @@ services:
 
   metadata:
     image: goopnigoop/metadata:latest
-    container_name: metadata
     build:
       context: ./metadata
       dockerfile: Dockerfile
     ports:
-      - '8084-8089:8080'
-      - '5009:5005'
+      - '8084-8090:8080'
+      - '5011-5017:5005'
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'

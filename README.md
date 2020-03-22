@@ -17,6 +17,7 @@ as an application simple CRUD application to save files metadata
  dashboard used for grafana:
  `https://grafana.com/grafana/dashboards/4701`
 
+
 3. Added auth entrypoint and user admin:admin
 
 to get jwt token:
@@ -29,3 +30,11 @@ to get jwt token:
   	"password":"admin"
   }
   `
+to run multiple replicas:
+
+`docker-compose up --scale metadata=3 -d --build`
+
+to build simple service without other dependencies
+
+`docker-compose up -d --no-deps --build metadata`
+
