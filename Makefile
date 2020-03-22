@@ -5,6 +5,9 @@ start:
 	mvn clean install
 	docker-compose -f docker-compose.yml up -d --build
 
+startnm:
+	docker-compose -f docker-compose.yml up -d --build
+
 clean:
 	mvn clean
 	docker system prune --volumes --force
