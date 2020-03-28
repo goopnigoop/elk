@@ -22,8 +22,9 @@ services:
       context: ./metadata
       dockerfile: Dockerfile
     ports:
-      - '8084-8090:8080'
-      - '5011-5017:5005'
+#      - '8084-8090:8080'
+      - '8084:8080'
+      - '5011:5005'
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
