@@ -11,6 +11,7 @@ Already added:
 - [x] eureka (service keeper)
 - [x] flyway (db versioning)
 - [x] jwt auth (stateless impl, no session)
+- [x] sleuth (log messages get tracing ids, through microservice and microservices)
 
 1. ELK stack (filebeat -> logstash -> elasticsearch -> kibana)
    
