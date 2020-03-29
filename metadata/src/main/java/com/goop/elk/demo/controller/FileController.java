@@ -7,6 +7,7 @@ import com.goop.elk.demo.dto.ResponseWrapper;
 import com.goop.elk.demo.model.FileEntity;
 import com.goop.elk.demo.service.FileEntityService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -22,10 +23,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("files")
 @RequiredArgsConstructor
+@Slf4j
 public class FileController {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
     private final FileEntityService fileEntityService;
     private final FileEntityMapper fileEntityMapper;
@@ -41,19 +42,19 @@ public class FileController {
 
     @GetMapping("/{filename}")
     public ResponseWrapper<List<FileEntityDto>> getFileByName(@PathVariable("filename") String filename) {
-        logger.info("Loading metadata for file: {}", filename);
+        log.info("Loading metadata for file: {}", filename);
         final List<FileEntityDto> listOfEntries = fileEntityService.findByFileName(filename)
                 .stream()
                 .map(fileEntityMapper::modelToDto)
                 .collect(Collectors.toList());
-        logger.info("metadata is found: {}", new Gson().toJson(listOfEntries));
+        log.info("metadata is found: {}", new Gson().toJson(listOfEntries));
         return new ResponseWrapper<>(environment,listOfEntries);
     }
 
     @PostMapping
     public ResponseEntity<?> saveOrUpdateFile(@RequestBody FileEntityDto fileEntity) {
         final FileEntity savedFileEntity = fileEntityService.saveOrUpdateFileEntity(fileEntityMapper.dtoToModel(fileEntity));
-        logger.info("File with id {} was created :: Creation Time - {}", savedFileEntity.getId(), dateTimeFormatter.format(LocalDateTime.now()));
+        log.info("File with id {} was created :: Creation Time - {}", savedFileEntity.getId(), dateTimeFormatter.format(LocalDateTime.now()));
         return new ResponseEntity<>(savedFileEntity, HttpStatus.OK);
     }
 
