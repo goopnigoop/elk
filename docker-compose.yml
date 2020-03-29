@@ -18,6 +18,7 @@ services:
       - "27017:27017"
   metadata:
     image: goopnigoop/metadata:latest
+    container_name: metadata
     build:
       context: ./metadata
       dockerfile: Dockerfile
@@ -31,6 +32,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+      ZIPKIN_SERVER: 'http://zipkin:9411/'
     depends_on:
       - mongo
       - pstg
@@ -49,6 +51,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+      ZIPKIN_SERVER: 'http://zipkin:9411/'
     depends_on:
       - metadata
       - pstg
@@ -85,6 +88,18 @@ services:
     ports:
       - "8761:8761"
 
+  zipkin:
+    image: openzipkin/zipkin
+    restart: always
+    container_name: zipkin
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
+      UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
+      EUREKA_CLIENT_FETCH_REGISTRY: 'true'
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+    ports:
+      - "9411:9411"
+
   zuul:
     image: goopnigoop/zuul:latest
     container_name: zuul
@@ -102,6 +117,7 @@ services:
       UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+      ZIPKIN_SERVER: 'http://zipkin:9411/'
 
   auth:
     image: goopnigoop/auth:latest
@@ -124,6 +140,7 @@ services:
       UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+      ZIPKIN_SERVER: 'http://zipkin:9411/'
 
 networks:
   default:
