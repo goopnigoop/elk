@@ -162,6 +162,7 @@
         <module>eureka</module>
         <module>zuul</module>
         <module>auth</module>
+        <module>config</module>
     </modules>
 
 </project>

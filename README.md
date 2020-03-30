@@ -52,6 +52,11 @@ Already added:
 
    to open `zipkin`:
    `http://localhost:9411/zipkin`
+   
+6. added config cloud server to store configs for services
+
+   to open `config cloud`:
+   `http://localhost:8888`
 
 
 

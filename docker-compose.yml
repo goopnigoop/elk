@@ -26,6 +26,8 @@ services:
 #      - '8084-8090:8080'
       - '8084:8080'
       - '5011:5005'
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
@@ -33,9 +35,18 @@ services:
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
       ZIPKIN_SERVER: 'http://zipkin:9411/'
+      CONFIG_SERVER: 'http://config:8888/'
+      EUREKA_SERVER: 'http://eureka:8761/eureka/'
+      MONGO: 'mongo'
+    entrypoint:
+      - "bash"
+      - "-c"
+      - "wait-for-it.sh --timeout=300 auth:9500 && java -Xmx300m -Dfile.encoding=UTF-8 -agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n -Djava.security.egd=file:/dev/./urandom -jar /app.jar"
     depends_on:
       - mongo
       - pstg
+      - auth
+      - eureka
 
   file:
     image: goopnigoop/file:latest
@@ -46,15 +57,25 @@ services:
     ports:
       - '8082:8080'
       - '5010:5005'
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
     environment:
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: 'http://eureka:8761/eureka/'
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
       ZIPKIN_SERVER: 'http://zipkin:9411/'
+      CONFIG_SERVER: 'http://config:8888/'
+      EUREKA_SERVER: 'http://eureka:8761/eureka/'
+    entrypoint:
+      - "bash"
+      - "-c"
+      - "wait-for-it.sh --timeout=300 auth:9500 && java -Xmx300m -Dfile.encoding=UTF-8 -agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n -Djava.security.egd=file:/dev/./urandom -jar /app.jar"
     depends_on:
       - metadata
+      - auth
       - pstg
+      - eureka
 
   prometheus:
     image: prom/prometheus
@@ -82,11 +103,32 @@ services:
     build:
       context: ./eureka
       dockerfile: Dockerfile
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+    environment:
+      EUREKA_CLIENT_FETCH_REGISTRY: 'false'
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'false'
+      CONFIG_SERVER: 'http://config:8888/'
+    ports:
+      - "8761:8761"
+    command: bash -c "wait-for-it.sh --timeout=300 config:8888 && java -Djava.security.egd=file:/dev/./urandom -jar /app/eureka-0.0.1-SNAPSHOT.jar"
+    depends_on:
+      - config
+
+  config:
+    image: goopnigoop/config:latest
+    container_name: config
+    build:
+      context: ./config
+      dockerfile: Dockerfile
     environment:
       EUREKA_CLIENT_FETCH_REGISTRY: 'false'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'false'
     ports:
-      - "8761:8761"
+      - "8888:8888"
+    depends_on:
+      - pstg
+      - mongo
 
   zipkin:
     image: openzipkin/zipkin
@@ -97,6 +139,7 @@ services:
       UREKA_INSTANCE_PREFER_IP_ADDRESS: 'true'
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
+      CONFIG_SERVER: 'http://config:8888/'
     ports:
       - "9411:9411"
 
@@ -118,6 +161,8 @@ services:
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
       ZIPKIN_SERVER: 'http://zipkin:9411/'
+      CONFIG_SERVER: 'http://config:8888/'
+      EUREKA_SERVER: 'http://eureka:8761/eureka/'
 
   auth:
     image: goopnigoop/auth:latest
@@ -130,7 +175,10 @@ services:
       - '5007:5005'
     depends_on:
       - eureka
+      - zipkin
       - pstg
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
     environment:
       DB_URL: pstg
       POSTGRES_DB: elk
@@ -141,6 +189,12 @@ services:
       EUREKA_CLIENT_FETCH_REGISTRY: 'true'
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'true'
       ZIPKIN_SERVER: 'http://zipkin:9411/'
+      CONFIG_SERVER: 'http://config:8888/'
+      EUREKA_SERVER: 'http://eureka:8761/eureka/'
+    entrypoint:
+      - "bash"
+      - "-c"
+      - "wait-for-it.sh --timeout=300 eureka:8761 && wait-for-it.sh --timeout=300 zipkin:9411 && java -Xmx300m -Dfile.encoding=UTF-8 -agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n -Djava.security.egd=file:/dev/./urandom -jar /app.jar"
 
 networks:
   default:
