@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM java:8-jdk
 VOLUME /tmp
 EXPOSE 8082
 EXPOSE 5005
