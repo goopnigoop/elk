@@ -28,7 +28,7 @@
         <sonar.login>bd83c5a8ed4595e911184fccb9b326b6526363fd</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
-        <spring.cloud.version>2.2.2.RELEASE</spring.cloud.version>
+        <spring.cloud.version>3.1.8</spring.cloud.version>
         <org.projectlombok.version>1.18.12</org.projectlombok.version>
     </properties>
 
